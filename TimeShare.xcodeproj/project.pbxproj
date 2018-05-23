@@ -13,6 +13,7 @@
 		BF4BB44420B4EC7100DF3D19 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4BB44320B4EC7100DF3D19 /* MessagesViewController.swift */; };
 		BF4BB44720B4EC7100DF3D19 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF4BB44520B4EC7100DF3D19 /* MainInterface.storyboard */; };
 		BF4BB44920B4EC7200DF3D19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF4BB44820B4EC7200DF3D19 /* Assets.xcassets */; };
+		BF4BB47720B529F200DF3D19 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4BB47620B529F200DF3D19 /* EventViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		BF4BB44620B4EC7100DF3D19 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		BF4BB44820B4EC7200DF3D19 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BF4BB44A20B4EC7200DF3D19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF4BB47620B529F200DF3D19 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 			children = (
 				BF4BB44320B4EC7100DF3D19 /* MessagesViewController.swift */,
 				BF4BB44520B4EC7100DF3D19 /* MainInterface.storyboard */,
+				BF4BB47620B529F200DF3D19 /* EventViewController.swift */,
 				BF4BB44820B4EC7200DF3D19 /* Assets.xcassets */,
 				BF4BB44A20B4EC7200DF3D19 /* Info.plist */,
 			);
@@ -210,6 +213,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF4BB44420B4EC7100DF3D19 /* MessagesViewController.swift in Sources */,
+				BF4BB47720B529F200DF3D19 /* EventViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
