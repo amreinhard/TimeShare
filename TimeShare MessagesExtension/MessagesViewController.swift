@@ -22,6 +22,7 @@ class MessagesViewController: MSMessagesAppViewController {
     }
     
     @IBAction func createNewEvent(_ sender: Any) {
+        requestPresentationStyle(.expanded)
     }
     // MARK: - Conversation Handling
     
@@ -60,9 +61,15 @@ class MessagesViewController: MSMessagesAppViewController {
     }
     
     override func willTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
-        // Called before the extension transitions to a new presentation style.
-    
-        // Use this method to prepare for the change in presentation style.
+        for child in childViewControllers {
+            child.willMove(toParentViewController: nil)
+            child.view.removeFromSuperview()
+            child.removeFromParentViewController()
+        }
+        
+        if presentationStyle == .expanded {
+            displayEventViewcontroller(conversation: activeConversation, identifier: "CreateEvent")
+        }
     }
     
     override func didTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
@@ -70,5 +77,26 @@ class MessagesViewController: MSMessagesAppViewController {
     
         // Use this method to finalize any behaviors associated with the change in presentation style.
     }
+    
+    func displayEventViewcontroller(conversation: MSConversation?, identifier: String) {
+        guard let conversation = conversation else { return }
+        
+        guard let vc = storyboard?.instantiateViewController(withIdentifier: identifier) as? EventViewController else { return }
+        
+        addChildViewController(vc)
+        
+        vc.view.frame = view.bounds
+        vc.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(vc.view)
+        
+        vc.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        vc.view.rightAnchor.constraint(equalTo:view.rightAnchor).isActive = true
+        vc.view.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        vc.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        vc.didMove(toParentViewController: self)
+    }
+    
+
 
 }
