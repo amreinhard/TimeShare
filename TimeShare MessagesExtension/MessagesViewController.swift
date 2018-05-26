@@ -27,10 +27,9 @@ class MessagesViewController: MSMessagesAppViewController {
     // MARK: - Conversation Handling
     
     override func willBecomeActive(with conversation: MSConversation) {
-        // Called when the extension is about to move from the inactive to active state.
-        // This will happen when the extension is about to present UI.
-        
-        // Use this method to configure the extension and restore previously stored state.
+        if presentationStyle == .expanded {
+            displayEventViewcontroller(conversation: conversation, identifier: "SelectDates")
+        }
     }
     
     override func didResignActive(with conversation: MSConversation) {
@@ -78,11 +77,90 @@ class MessagesViewController: MSMessagesAppViewController {
         // Use this method to finalize any behaviors associated with the change in presentation style.
     }
     
+    func createMessage(with dates: [Date], votes: [Int]) {
+        requestPresentationStyle(.compact)
+        
+        guard let conversation = activeConversation else { return }
+        
+        var components = URLComponents()
+        var items = [URLQueryItem]()
+        
+        for (index, date) in dates.enumerated() {
+            let dateItem = URLQueryItem(name: "date-\(index)", value: string(from: date))
+            items.append(dateItem)
+            
+            let voteItem = URLQueryItem(name: "vote-\(index)", value: String(votes[index]))
+            items.append(voteItem)
+        }
+        
+        components.queryItems = items
+        
+        let session = conversation.selectedMessage?.session ?? MSSession()
+        
+        let message = MSMessage(session: session)
+        message.url = components.url
+        
+        let layout = MSMessageTemplateLayout()
+        layout.image = render(dates: dates)
+        layout.caption = "I voted"
+        message.layout = layout
+        
+        conversation.insert(message) { error in
+            if let error = error {
+                print(error)
+            }
+        }
+    }
+
+    func string(from date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm"
+        return dateFormatter.string(from: date)
+    }
+    
+    func render(dates: [Date]) -> UIImage {
+        let inset: CGFloat = 20
+        
+        let attributes = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .body), NSAttributedStringKey.foregroundColor: UIColor.darkGray]
+        
+        var stringToRender = ""
+        
+        dates.forEach {
+            stringToRender += DateFormatter.localizedString(from: $0, dateStyle: .long, timeStyle: .short) + "\n"
+        }
+        
+        let trimmed = stringToRender.trimmingCharacters(in: .whitespacesAndNewlines)
+        let attributedString = NSAttributedString(string: trimmed, attributes: attributes)
+        
+        
+        var imageSize = attributedString.size()
+        imageSize.width += inset * 2
+        imageSize.height += inset * 2
+        
+        let format = UIGraphicsImageRendererFormat()
+        format.opaque = true
+        format.scale = 3
+        
+        let renderer = UIGraphicsImageRenderer(size: imageSize, format: format)
+        
+        let image = renderer.image { ctx in
+            UIColor.white.set()
+            ctx.fill(CGRect(origin: CGPoint.zero, size: imageSize))
+            
+            attributedString.draw(at: CGPoint(x: inset, y: inset))
+        }
+        
+        return image
+    }
+    
     func displayEventViewcontroller(conversation: MSConversation?, identifier: String) {
         guard let conversation = conversation else { return }
         
         guard let vc = storyboard?.instantiateViewController(withIdentifier: identifier) as? EventViewController else { return }
         
+        vc.load(from: conversation.selectedMessage)
+        vc.delegate = self
         addChildViewController(vc)
         
         vc.view.frame = view.bounds
